@@ -1,0 +1,20 @@
+{
+  "testEnvironment": "miniflare",
+  "transform": {
+    "^.+\\.(t|j)sx?$": "ts-jest"
+  },
+  "globals": {
+    "BRANDING_NAME": "FixReel",
+    "BRANDING_NAME_DISCORD": "FixReelBranding",
+    "DIRECT_MEDIA_DOMAINS": "d.fxreel.com,dl.fxreel.com",
+    "MOSAIC_DOMAIN_LIST": "mosaic.fxreel.com",
+    "API_HOST_LIST": "api.fxreel.com",
+    "HOST_URL": "https://fxreel.com",
+    "REDIRECT_URL": "https://github.com/sparkyfen/FixReel",
+    "EMBED_URL": "TODO",
+    "RELEASE_NAME": "fixreel-test",
+    "TEST": true
+  },
+  "testRegex": "/test/.*\\.test\\.ts$",
+  "collectCoverageFrom": ["src/**/*.{ts,js}"]
+}

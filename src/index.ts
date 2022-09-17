@@ -3,6 +3,7 @@ import { Router } from 'itty-router';
 import { Constants } from './constants';
 import { Strings } from './strings';
 import { sanitizeText } from './helpers/utils';
+import { getFbUrl } from './helpers/facebook';
 
 const router = Router();
 
@@ -27,6 +28,102 @@ const versionRequest = async (request: Request) => {
   });
 };
 
+class ElementHandler {
+  element(element) {
+    // An incoming element, such as `div`
+    // console.log(`Incoming element: ${element.tagName}`);
+  }
+
+  comments(comment) {
+    // An incoming comment
+  }
+
+  text(text) {
+    // An incoming piece of text
+  }
+}
+
+class DocumentHandler {
+  doctype(doctype) {
+    // An incoming doctype, such as <!DOCTYPE html>
+    // console.log(`Incoming doctype: ${JSON.stringify(doctype)}`);
+  }
+
+  comments(comment) {
+    // An incoming comment
+  }
+
+  text(text) {
+    // An incoming piece of text
+  }
+
+  end(end) {
+    // The end of the document
+  }
+}
+
+
+const videoRequest = async (request: Request) => {
+  const { params, query } = request;
+  console.log(params);
+  console.log(query);
+  const videoId = params.id;
+  if (!videoId) {
+    return new Response(JSON.stringify({message: 'Missing video id.'}, { 
+      status: 400, headers: {
+      ...Constants.RESPONSE_HEADERS,
+      'content-type': 'application/json',
+      'cache-control': 'max-age=300'
+    }}));
+  }
+  const userId = params.user;
+  if (!userId) {
+    return new Response(JSON.stringify({message: 'Missing user id.'}, { 
+      status: 400, headers: {
+      ...Constants.RESPONSE_HEADERS,
+      'content-type': 'application/json',
+      'cache-control': 'max-age=300'
+    }}));
+  }
+  const facebookUrl = getFbUrl(videoId);
+  const facebookRes = await fetch(facebookUrl);
+  new HTMLRewriter().on('a', new ElementHandler()).onDocument(new DocumentHandler()).transform(facebookRes);
+  return new Response(JSON.stringify({message: 'Hello video request', url: facebookUrl}), {
+    status: 200, headers: {
+    ...Constants.RESPONSE_HEADERS,
+    'content-type': 'application/json',
+    'cache-control': 'max-age=1'
+  }});
+};
+
+const reelRequest = async (request: Request) => {
+  const { params, query } = request;
+  console.log(params);
+  console.log(query);
+  const videoId = params.id;
+  if (!videoId) {
+    return new Response(JSON.stringify({message: 'Missing video id.'}, {
+      status: 400, headers: {
+      ...Constants.RESPONSE_HEADERS,
+      'content-type': 'application/json',
+      'cache-control': 'max-age=300'
+    }}));
+  }
+  const facebookUrl = getFbUrl(videoId);
+  const facebookRes = await fetch(facebookUrl);
+  const rewriter =  new HTMLRewriter().on('*', new ElementHandler())
+  .onDocument(new DocumentHandler());
+  console.log('Rewriter', await rewriter.transform(facebookRes).text());
+  return new Response(JSON.stringify({message: 'Hello reel request', url: facebookUrl}), {
+    status: 200, headers: {
+    ...Constants.RESPONSE_HEADERS,
+    'content-type': 'application/json',
+    'cache-control': 'max-age=1'
+  }});
+};
+
+router.get('/:user/videos/:id', videoRequest);
+router.get('/reel/:id', reelRequest);
 router.get('/version', versionRequest);
 
 

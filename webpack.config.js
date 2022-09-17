@@ -24,7 +24,9 @@ let envVariables = [
   'REDIRECT_URL',
   'EMBED_URL',
   'MOSAIC_DOMAIN_LIST',
-  'API_HOST_LIST'
+  'API_HOST_LIST',
+  'META_APP_ID',
+  'META_CLIENT_ID'
 ];
 
 let plugins = [

@@ -13,6 +13,7 @@
     "REDIRECT_URL": "https://github.com/sparkyfen/FixReel",
     "EMBED_URL": "TODO",
     "RELEASE_NAME": "fixreel-test",
+    "META_CLIENT_ID": "TODO",
     "TEST": true
   },
   "testRegex": "/test/.*\\.test\\.ts$",
